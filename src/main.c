@@ -11,7 +11,6 @@ static void app_activate(GApplication *app)
 	// Create a struct to hold the label and buttons
 	Widgets *widgets = g_malloc(sizeof(Widgets));
 	GtkWidget *win = create_main_window(app, widgets);
-
 	gtk_window_present(GTK_WINDOW(win));
 
 	// Check the connection status on startup and update the UI accordingly

@@ -10,17 +10,21 @@ void init_window(GtkWidget *win, GtkWidget *main_box)
 
 GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
 {
-	GtkWidget *win = gtk_application_window_new(GTK_APPLICATION(app));
-
-	GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *display_box = gtk_grid_new();
+	// Setup the main content
+    GtkWidget *display_box = gtk_grid_new();
 	init_display_box(display_box, widgets);
 
+    // Setup the buttons
 	GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	init_button_box(button_box, widgets);
 
+    // Put the display and button boxes into a main container box
+	GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	init_main_box(main_box, display_box, button_box);
-	init_window(win, main_box);
+
+    // Create the main window and add the main container box
+    GtkWidget *win = gtk_application_window_new(GTK_APPLICATION(app));
+    init_window(win, main_box);
 
 	return win;
 }
@@ -51,7 +55,6 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
 
 GtkWidget *init_entry_widget(GtkEntry *entry, const char *label_text, const char *placeholder_text)
 {
-    // box for ip address entry
     GtkWidget *label = gtk_label_new(label_text);
     GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_entry_set_placeholder_text(GTK_ENTRY(entry), placeholder_text);
