@@ -1,4 +1,4 @@
-name: Build Metro Bundler Launcher on macOS
+name: Build MacOS
 
 on:
   push:
