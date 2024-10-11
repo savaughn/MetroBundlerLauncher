@@ -17,8 +17,12 @@ CFLAGS = $(shell pkg-config --cflags gtk4) -I$(INCLUDE_DIR)
 LIBS = $(shell pkg-config --libs gtk4)
 
 # Build target
-$(TARGET): $(SRC_FILES)
+$(TARGET): $(SRC_FILES) | $(BUILD_DIR)
 	@$(CC) $(CFLAGS) -o $(TARGET) $(SRC_FILES) $(LIBS)
+
+# Ensure build directory exists
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
 
 run: $(TARGET)
 	@./$(TARGET)
