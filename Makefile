@@ -27,9 +27,13 @@ $(BUILD_DIR):
 run: $(TARGET)
 	@./$(TARGET)
 
+bundle: $(TARGET)
+	@./bundle_macos_app.sh
+	@echo "Bundle created in build/"
+
 # Clean up
 clean:
 	rm -f $(TARGET)
 
 # Phony targets
-.PHONY: clean run
+.PHONY: clean run bundle
