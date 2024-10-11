@@ -20,19 +20,7 @@ static void app_activate(GApplication *app)
 	GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	init_button_box(button_box, widgets);
 
-	// Add padding to the main container box
-	gtk_widget_set_margin_top(main_box, 10);
-	gtk_widget_set_margin_bottom(main_box, 10);
-	gtk_widget_set_margin_start(main_box, 10);
-	gtk_widget_set_margin_end(main_box, 10);
-
-	// Add display_box to the top and button_box to the bottom
-	gtk_box_append(GTK_BOX(main_box), display_box);
-	gtk_widget_set_vexpand(display_box, TRUE);
-	gtk_widget_set_valign(display_box, GTK_ALIGN_START);
-
-	gtk_box_append(GTK_BOX(main_box), button_box);
-	gtk_widget_set_valign(button_box, GTK_ALIGN_END);
+	init_main_box(main_box, display_box, button_box);
 
 	gtk_window_set_title(GTK_WINDOW(win), "Metro Bundler Launcher");
 	gtk_window_set_default_size(GTK_WINDOW(win), 400, 100);
