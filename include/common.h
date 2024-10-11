@@ -12,6 +12,7 @@ typedef struct {
   GtkButton *dark_mode_button;
   GtkEntry *env_entry;
   GtkEntry *port_entry;
+  GtkEntry *file_entry;
   GtkCheckButton *hermes_checkbox;
 } Widgets;
 

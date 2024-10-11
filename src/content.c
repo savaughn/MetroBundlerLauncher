@@ -70,16 +70,19 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     GtkWidget *status_label = gtk_label_new("");
     GtkWidget *env_entry = gtk_entry_new();
     GtkWidget *port_entry = gtk_entry_new();
+    GtkWidget *file_entry = gtk_entry_new();
     GtkWidget *hermes_checkbox = gtk_check_button_new_with_label("Enable Hermes Debugger");
 
     widgets->status_label = GTK_LABEL(status_label);
     widgets->env_entry = GTK_ENTRY(env_entry);
     widgets->port_entry = GTK_ENTRY(port_entry);
+    widgets->file_entry = GTK_ENTRY(file_entry);
     widgets->hermes_checkbox = GTK_CHECK_BUTTON(hermes_checkbox);
 
     GtkWidget *inputs_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->env_entry, "ENV", "dev"));
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "Port", "8090"));
+    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->file_entry, "root", ""));
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 
     // Set the width of each widget to half of the window width

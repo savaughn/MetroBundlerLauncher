@@ -26,28 +26,29 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
         port = DEFAULT_PORT;
     }
 
-    // Get the current working directory
-    char cwd[1024];
-    getcwd(cwd, sizeof(cwd));
+    const char *file_text = gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry));
+    if (strlen(file_text) == 0)
+    {
+        gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), "");
+        file_text = gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry));
+    }
 
-    // Construct the command to start the Metro Bundler
-    char *p_url = g_strdup_printf("%s", cwd);
-    char *p_cmd = g_strdup_printf("ENV=%s npx react-native start --port %d", env_text, port);
+    char *p_cmd = g_strdup_printf("cd %s && ENV=%s npx react-native start --port %d", file_text, env_text, port);
     // append hermes flag if enabled
     if (gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox)))
     {
         p_cmd = g_strdup_printf("%s --experimental-debugger", p_cmd);
     }
 
-    char *cmd = g_strdup_printf("cd %s && %s", p_url, p_cmd);
+    // char *cmd = g_strdup_printf("%s", p_cmd);
     char *osascript_cmd = g_strdup_printf(
-        "osascript -e 'tell application \"Terminal\" to do script \"%s\"'", cmd);
+        "osascript -e 'tell application \"Terminal\" to do script \"%s\"'", p_cmd);
 
     // Execute the osascript command to open a new Terminal window and run the command
     system(osascript_cmd);
 
     // Free the allocated memory for cmd and osascript_cmd
-    g_free(cmd);
+    g_free(p_cmd);
     g_free(osascript_cmd);
 
     // Immediately disable the start button and port entry
