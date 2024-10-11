@@ -26,8 +26,6 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
         port = DEFAULT_PORT;
     }
 
-    const bool hermes_enabled = gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox));
-
     // Get the current working directory
     char cwd[1024];
     getcwd(cwd, sizeof(cwd));
@@ -36,7 +34,7 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     char *p_url = g_strdup_printf("%s", cwd);
     char *p_cmd = g_strdup_printf("ENV=%s npx react-native start --port %d", env_text, port);
     // append hermes flag if enabled
-    if (hermes_enabled)
+    if (gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox)))
     {
         p_cmd = g_strdup_printf("%s --experimental-debugger", p_cmd);
     }
