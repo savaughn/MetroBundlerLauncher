@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Build Metro Bundler Launcher on macOS
 
 on:
   push:
@@ -19,3 +19,8 @@ jobs:
       run: ./setup_macos.sh
     - name: make
       run: make
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: build/
