@@ -1,7 +1,7 @@
 # Metro Bundler Launcher
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ncorgan/metro_launcher/blob/master/LICENSE.txt) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/savaughn/metro_launcher)](https://github.com/savaughn/metro_launcher/releases) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/savaughn/metro_launcher/macos.yml?branch=master)](https://github.com/savaughn/metro_launcher/actions) [![GitHub issues](https://img.shields.io/github/issues/savaughn/metro_launcher)](https://github.com/savaughn/metro_launcher/issues)[![GitHub all releases](https://img.shields.io/github/downloads/savaughn/metro_launcher/total)](https://github.com/savaughn/metro_launcher/releases)
 
-Metro Bundler Launcher is a GTK4-based application designed to manage the Metro Bundler for React Native projects. It provides a graphical interface to start, terminate, and restart the Metro Bundler.
+Metro Bundler Launcher is a GTK4-based application designed to manage the Metro Bundler for React Native projects.
 
 ![image](https://github.com/user-attachments/assets/116e4939-70d5-401c-ada7-bdc848b77733)
 
