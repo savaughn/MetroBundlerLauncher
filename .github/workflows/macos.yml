@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
     - uses: actions/checkout@v4
@@ -19,8 +19,12 @@ jobs:
       run: ./setup_macos.sh
     - name: make
       run: make
+    - name: set up bundle script
+      run: chmod +x ./bundle_macos_app.sh
+    - name: Bundle into macOS app
+      run: ./bundle_macos_app.sh
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: build-artifacts
+        name: MetroBundlerLauncher
         path: build/
