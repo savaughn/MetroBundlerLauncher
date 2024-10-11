@@ -8,24 +8,9 @@ static void app_activate(GApplication *app)
 	GtkSettings *settings = gtk_settings_get_default();
 	g_object_set(settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
 
-	GtkWidget *win = gtk_application_window_new(GTK_APPLICATION(app));
-
 	// Create a struct to hold the label and buttons
 	Widgets *widgets = g_malloc(sizeof(Widgets));
-
-	GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *display_box = gtk_grid_new();
-	init_display_box(display_box, widgets);
-
-	GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	init_button_box(button_box, widgets);
-
-	init_main_box(main_box, display_box, button_box);
-
-	gtk_window_set_title(GTK_WINDOW(win), "Metro Bundler Launcher");
-	gtk_window_set_default_size(GTK_WINDOW(win), 400, 100);
-	gtk_window_set_resizable(GTK_WINDOW(win), FALSE); // Lock the window size
-	gtk_window_set_child(GTK_WINDOW(win), main_box);
+	GtkWidget *win = create_main_window(app, widgets);
 
 	gtk_window_present(GTK_WINDOW(win));
 

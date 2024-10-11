@@ -1,5 +1,30 @@
 #include "content.h"
 
+void init_window(GtkWidget *win, GtkWidget *main_box)
+{
+    gtk_window_set_title(GTK_WINDOW(win), "Metro Bundler Launcher");
+    gtk_window_set_default_size(GTK_WINDOW(win), 400, 100);
+    gtk_window_set_resizable(GTK_WINDOW(win), FALSE); // Lock the window size
+    gtk_window_set_child(GTK_WINDOW(win), main_box);
+}
+
+GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
+{
+	GtkWidget *win = gtk_application_window_new(GTK_APPLICATION(app));
+
+	GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *display_box = gtk_grid_new();
+	init_display_box(display_box, widgets);
+
+	GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	init_button_box(button_box, widgets);
+
+	init_main_box(main_box, display_box, button_box);
+	init_window(win, main_box);
+
+	return win;
+}
+
 void init_button_box(GtkWidget *button_box, Widgets *widgets)
 {
     GtkWidget *start_button = create_button(BUTTON_TYPE_START);
