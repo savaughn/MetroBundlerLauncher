@@ -14,7 +14,7 @@ SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 
 # GTK4 flags
 CFLAGS = $(shell pkg-config --cflags gtk4) -I$(INCLUDE_DIR)
-LIBS = $(shell pkg-config --libs gtk4)
+LIBS = $(shell pkg-config --libs gtk4) -ljansson
 
 # Build target
 $(TARGET): $(SRC_FILES) | $(BUILD_DIR)

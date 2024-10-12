@@ -1,4 +1,52 @@
+#include <jansson.h>
+#include <sys/stat.h>
 #include "actions.h"
+
+int save_options_to_application_support(const char *port, const char *env, const char *file)
+{
+    // Get the home directory
+    const char *home = getenv("HOME");
+    if (home == NULL)
+    {
+        return -1;
+    }
+
+    // Create the path to the application support directory
+    char *app_support_path = g_strdup_printf("%s/Library/Application Support/metro-launcher", home);
+
+    // Create the directory if it doesn't exist
+    struct stat st = {0};
+    if (stat(app_support_path, &st) == -1)
+    {
+        mkdir(app_support_path, 0700);
+    }
+
+    // Create the path to the options file
+    char *options_path = g_strdup_printf("%s/options.json", app_support_path);
+
+    // Create the JSON object
+    json_t *root = json_object();
+    json_object_set_new(root, "port", json_string(port));
+    json_object_set_new(root, "env", json_string(env));
+    json_object_set_new(root, "file", json_string(file));
+
+    // Write the JSON object to the file
+    FILE *fp = fopen(options_path, "w");
+    if (fp == NULL)
+    {
+        return -1;
+    }
+
+    json_dumpf(root, fp, JSON_INDENT(4));
+    fclose(fp);
+
+    // Free the allocated memory
+    g_free(app_support_path);
+    g_free(options_path);
+    json_decref(root);
+
+    return 0;
+}
 
 // Callback function for the start button click
 void on_start_button_clicked(GtkButton *button, gpointer data)
@@ -40,7 +88,6 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
         p_cmd = g_strdup_printf("%s --experimental-debugger", p_cmd);
     }
 
-    // char *cmd = g_strdup_printf("%s", p_cmd);
     char *osascript_cmd = g_strdup_printf(
         "osascript -e 'tell application \"Terminal\" to do script \"%s\"'", p_cmd);
 
@@ -56,6 +103,8 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->env_entry), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE);
+
+    save_options_to_application_support(port_text, env_text, file_text);
 
     // Set up a periodic check for the connection and update the label
     g_timeout_add(1000, check_connection, widgets); // Check every 1 second

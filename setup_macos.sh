@@ -23,5 +23,8 @@ fi
 
 echo "Installing gtk4..."
 brew install gtk4
-
 echo "gtk4 installation complete."
+
+echo "Installing jansson for json support..."
+brew install jansson
+echo "jansson installation complete."
