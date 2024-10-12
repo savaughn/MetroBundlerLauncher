@@ -80,8 +80,8 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     widgets->hermes_checkbox = GTK_CHECK_BUTTON(hermes_checkbox);
 
     GtkWidget *inputs_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->env_entry, "ENV", "dev"));
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "Port", "8090"));
+    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->env_entry, "p.fix", "ENV=dev"));
+    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "port", "8090"));
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->file_entry, "root", ""));
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 

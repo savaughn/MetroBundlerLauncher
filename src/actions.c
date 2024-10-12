@@ -33,7 +33,7 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
         file_text = gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry));
     }
 
-    char *p_cmd = g_strdup_printf("cd %s && ENV=%s npx react-native start --port %d", file_text, env_text, port);
+    char *p_cmd = g_strdup_printf("cd %s && %s npx react-native start --port %d", file_text, env_text, port);
     // append hermes flag if enabled
     if (gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox)))
     {
