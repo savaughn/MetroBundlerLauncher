@@ -106,7 +106,7 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     const char *prefix_text = gtk_editable_get_text(GTK_EDITABLE(widgets->prefix_entry));
     if (strlen(prefix_text) == 0)
     {
-        gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), DEFAULT_PREFIX);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), "");
         prefix_text = gtk_editable_get_text(GTK_EDITABLE(widgets->prefix_entry));
     }
 

@@ -24,7 +24,6 @@ typedef enum
   BUTTON_TYPE_DARK_MODE
 } ButtonType;
 
-#define DEFAULT_PREFIX ""
-#define DEFAULT_PORT 8090 // Define the default port
+#define DEFAULT_PORT 8080 // Define the default port
 
 #endif // COMMON_H
