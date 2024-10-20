@@ -13,16 +13,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Run cppcheck
+      run: |
+        cppcheck --std=c11 --enable=all --inconclusive --suppress=missingInclude --suppress=missingIncludeSystem src/ || true
+        
     - name: Set up script permissions
       run: chmod +x ./setup_macos.sh
+
     - name: install dependencies
       run: ./setup_macos.sh
+
     - name: make
       run: make
+
     - name: set up bundle script
       run: chmod +x ./bundle_macos_app.sh
+
     - name: Bundle into macOS app
       run: ./bundle_macos_app.sh
+
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
