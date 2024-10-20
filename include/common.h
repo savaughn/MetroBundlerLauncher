@@ -10,7 +10,7 @@ typedef struct {
   GtkButton *terminate_button;
   GtkButton *restart_button;
   GtkButton *dark_mode_button;
-  GtkEntry *env_entry;
+  GtkEntry *prefix_entry;
   GtkEntry *port_entry;
   GtkEntry *file_entry;
   GtkCheckButton *hermes_checkbox;
@@ -24,7 +24,7 @@ typedef enum
   BUTTON_TYPE_DARK_MODE
 } ButtonType;
 
-#define DEFAULT_ENV "dev" // Define the default IP address
+#define DEFAULT_PREFIX ""
 #define DEFAULT_PORT 8090 // Define the default port
 
 #endif // COMMON_H

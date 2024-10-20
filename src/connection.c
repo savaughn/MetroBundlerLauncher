@@ -54,7 +54,7 @@ gboolean check_connection(gpointer data)
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), TRUE); // Enable the terminate button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->restart_button), TRUE);   // Enable the restart button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), FALSE);      // Disable the port entry
-        gtk_widget_set_sensitive(GTK_WIDGET(widgets->env_entry), FALSE);        // Disable the IP entry
+        gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), FALSE);        // Disable the IP entry
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE); // Disable the Hermes checkbox
     }
     else
@@ -65,7 +65,7 @@ gboolean check_connection(gpointer data)
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), FALSE); // Disable the terminate button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->restart_button), FALSE);   // Disable the restart button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), TRUE);        // Enable the port entry
-        gtk_widget_set_sensitive(GTK_WIDGET(widgets->env_entry), TRUE);          // Enable the IP entry
+        gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), TRUE);          // Enable the IP entry
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), TRUE);   // Enable the Hermes checkbox
     }
     g_free(label_text);

@@ -1,4 +1,5 @@
 #include "content.h"
+#include "actions.h"
 
 void init_window(GtkWidget *win, GtkWidget *main_box)
 {
@@ -68,21 +69,30 @@ GtkWidget *init_entry_widget(GtkEntry *entry, const char *label_text, const char
 void init_display_box(GtkWidget *display_box, Widgets *widgets)
 {
     GtkWidget *status_label = gtk_label_new("");
-    GtkWidget *env_entry = gtk_entry_new();
+    GtkWidget *prefix_entry = gtk_entry_new();
     GtkWidget *port_entry = gtk_entry_new();
     GtkWidget *file_entry = gtk_entry_new();
     GtkWidget *hermes_checkbox = gtk_check_button_new_with_label("Enable Hermes Debugger");
 
     widgets->status_label = GTK_LABEL(status_label);
-    widgets->env_entry = GTK_ENTRY(env_entry);
+    widgets->prefix_entry = GTK_ENTRY(prefix_entry);
     widgets->port_entry = GTK_ENTRY(port_entry);
     widgets->file_entry = GTK_ENTRY(file_entry);
     widgets->hermes_checkbox = GTK_CHECK_BUTTON(hermes_checkbox);
 
     GtkWidget *inputs_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->env_entry, "p.fix", "ENV=dev"));
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "port", "8090"));
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->file_entry, "root", ""));
+
+    char *port_text, *prefix_text, *file_text;
+    if (read_options_from_application_support(&port_text, &prefix_text, &file_text) == 0)
+    {
+        gtk_editable_set_text(GTK_EDITABLE(widgets->port_entry), port_text);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), prefix_text);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), file_text);
+    }
+
+    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->prefix_entry, "", "env vars"));
+    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "", "port"));
+    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->file_entry, "", "RN project root"));
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 
     // Set the width of each widget to half of the window width
