@@ -2,9 +2,9 @@
 #include <sys/stat.h>
 #include "actions.h"
 
-static int save_options_to_application_support(const char *port, const char *prefix, const char *file, gboolean *debugger_enabled);
+static int save_options_to_application_support(const Options *options);
 
-int read_options_from_application_support(char **port, char **prefix, char **file, gboolean *debugger_enabled)
+int read_options_from_application_support(Options *options)
 {
     // Get the home directory
     const char *home = getenv("HOME");
@@ -31,10 +31,10 @@ int read_options_from_application_support(char **port, char **prefix, char **fil
     json_t *debugger_enabled_json = json_object_get(root, "debugger_enabled");
 
     // Set the port, prefix, and file values
-    *port = g_strdup(json_string_value(port_json));
-    *prefix = g_strdup(json_string_value(prefix_json));
-    *file = g_strdup(json_string_value(file_json));
-    *debugger_enabled = json_boolean_value(debugger_enabled_json);
+    options->port = g_strdup(json_string_value(port_json));
+    options->prefix = g_strdup(json_string_value(prefix_json));
+    options->file = g_strdup(json_string_value(file_json));
+    options->debugger_enabled = json_boolean_value(debugger_enabled_json);
 
     // Free the allocated memory
     g_free(options_path);
@@ -42,8 +42,7 @@ int read_options_from_application_support(char **port, char **prefix, char **fil
 
     return 0;
 }
-
-int save_options_to_application_support(const char *port, const char *prefix, const char *file, gboolean *debugger_enabled)
+static int save_options_to_application_support(const Options *options)
 {
     // Get the home directory
     const char *home = getenv("HOME");
@@ -67,10 +66,10 @@ int save_options_to_application_support(const char *port, const char *prefix, co
 
     // Create the JSON object
     json_t *root = json_object();
-    json_object_set_new(root, "port", json_string(port));
-    json_object_set_new(root, "prefix", json_string(prefix));
-    json_object_set_new(root, "file", json_string(file));
-    json_object_set_new(root, "debugger_enabled", json_boolean(debugger_enabled));
+    json_object_set_new(root, "port", json_string(options->port));
+    json_object_set_new(root, "prefix", json_string(options->prefix));
+    json_object_set_new(root, "file", json_string(options->file));
+    json_object_set_new(root, "debugger_enabled", json_boolean(options->debugger_enabled));
 
     // Write the JSON object to the file
     FILE *fp = fopen(options_path, "w");
@@ -148,7 +147,8 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE);
 
-    save_options_to_application_support(port_text, prefix_text, file_text, &debugger_enabled);
+    Options options = {port_text, prefix_text, file_text, debugger_enabled};
+    save_options_to_application_support(&options);
 
     // Set up a periodic check for the connection and update the label
     g_timeout_add(1000, check_connection, widgets); // Check every 1 second

@@ -3,6 +3,13 @@
 
 #include <gtk/gtk.h>
 
+typedef struct {
+    const char *port;
+    const char *prefix;
+    const char *file;
+    gboolean debugger_enabled;
+} Options;
+
 // Struct to hold label, button widgets, and port entry
 typedef struct {
   GtkLabel *status_label;

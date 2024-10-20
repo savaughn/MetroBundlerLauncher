@@ -11,23 +11,23 @@ void init_window(GtkWidget *win, GtkWidget *main_box)
 
 GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
 {
-	// Setup the main content
+    // Setup the main content
     GtkWidget *display_box = gtk_grid_new();
-	init_display_box(display_box, widgets);
+    init_display_box(display_box, widgets);
 
     // Setup the buttons
-	GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	init_button_box(button_box, widgets);
+    GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    init_button_box(button_box, widgets);
 
     // Put the display and button boxes into a main container box
-	GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	init_main_box(main_box, display_box, button_box);
+    GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    init_main_box(main_box, display_box, button_box);
 
     // Create the main window and add the main container box
     GtkWidget *win = gtk_application_window_new(GTK_APPLICATION(app));
     init_window(win, main_box);
 
-	return win;
+    return win;
 }
 
 void init_button_box(GtkWidget *button_box, Widgets *widgets)
@@ -85,12 +85,13 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     char *port_text, *prefix_text, *file_text;
     gboolean debugger_enabled = FALSE;
 
-    if (read_options_from_application_support(&port_text, &prefix_text, &file_text, &debugger_enabled) == 0)
+    Options options;
+    if (read_options_from_application_support(&options) == 0)
     {
-        gtk_editable_set_text(GTK_EDITABLE(widgets->port_entry), port_text);
-        gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), prefix_text);
-        gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), file_text);
-        gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox), debugger_enabled);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->port_entry), options.port);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), options.prefix);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), options.file);
+        gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox), options.debugger_enabled);
     }
 
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->prefix_entry, "", "env vars"));
