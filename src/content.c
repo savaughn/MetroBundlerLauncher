@@ -83,11 +83,14 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     GtkWidget *inputs_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 
     char *port_text, *prefix_text, *file_text;
-    if (read_options_from_application_support(&port_text, &prefix_text, &file_text) == 0)
+    gboolean debugger_enabled = FALSE;
+
+    if (read_options_from_application_support(&port_text, &prefix_text, &file_text, &debugger_enabled) == 0)
     {
         gtk_editable_set_text(GTK_EDITABLE(widgets->port_entry), port_text);
         gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), prefix_text);
         gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), file_text);
+        gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox), debugger_enabled);
     }
 
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->prefix_entry, "", "env vars"));

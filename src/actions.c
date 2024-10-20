@@ -2,7 +2,9 @@
 #include <sys/stat.h>
 #include "actions.h"
 
-int read_options_from_application_support(char **port, char **prefix, char **file)
+static int save_options_to_application_support(const char *port, const char *prefix, const char *file, gboolean *debugger_enabled);
+
+int read_options_from_application_support(char **port, char **prefix, char **file, gboolean *debugger_enabled)
 {
     // Get the home directory
     const char *home = getenv("HOME");
@@ -26,11 +28,13 @@ int read_options_from_application_support(char **port, char **prefix, char **fil
     json_t *port_json = json_object_get(root, "port");
     json_t *prefix_json = json_object_get(root, "prefix");
     json_t *file_json = json_object_get(root, "file");
+    json_t *debugger_enabled_json = json_object_get(root, "debugger_enabled");
 
     // Set the port, prefix, and file values
     *port = g_strdup(json_string_value(port_json));
     *prefix = g_strdup(json_string_value(prefix_json));
     *file = g_strdup(json_string_value(file_json));
+    *debugger_enabled = json_boolean_value(debugger_enabled_json);
 
     // Free the allocated memory
     g_free(options_path);
@@ -39,7 +43,7 @@ int read_options_from_application_support(char **port, char **prefix, char **fil
     return 0;
 }
 
-int save_options_to_application_support(const char *port, const char *prefix, const char *file)
+int save_options_to_application_support(const char *port, const char *prefix, const char *file, gboolean *debugger_enabled)
 {
     // Get the home directory
     const char *home = getenv("HOME");
@@ -66,6 +70,7 @@ int save_options_to_application_support(const char *port, const char *prefix, co
     json_object_set_new(root, "port", json_string(port));
     json_object_set_new(root, "prefix", json_string(prefix));
     json_object_set_new(root, "file", json_string(file));
+    json_object_set_new(root, "debugger_enabled", json_boolean(debugger_enabled));
 
     // Write the JSON object to the file
     FILE *fp = fopen(options_path, "w");
@@ -119,8 +124,10 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     }
 
     char *p_cmd = g_strdup_printf("cd %s && %s npx react-native start --port %d", file_text, prefix_text, port);
+
     // append hermes flag if enabled
-    if (gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox)))
+    gboolean debugger_enabled = gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox));
+    if (debugger_enabled)
     {
         p_cmd = g_strdup_printf("%s --experimental-debugger", p_cmd);
     }
@@ -141,7 +148,7 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE);
 
-    save_options_to_application_support(port_text, prefix_text, file_text);
+    save_options_to_application_support(port_text, prefix_text, file_text, &debugger_enabled);
 
     // Set up a periodic check for the connection and update the label
     g_timeout_add(1000, check_connection, widgets); // Check every 1 second
