@@ -82,9 +82,6 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
 
     GtkWidget *inputs_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 
-    char *port_text, *prefix_text, *file_text;
-    gboolean debugger_enabled = FALSE;
-
     Options options;
     if (read_options_from_application_support(&options) == 0)
     {

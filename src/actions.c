@@ -174,8 +174,6 @@ void on_terminate_button_clicked(GtkButton *button, gpointer data)
 // Callback function for the restart button click
 void on_restart_button_clicked(GtkButton *button, gpointer data)
 {
-    Widgets *widgets = (Widgets *)data;
-
     // Terminate the process running on the specified port
     system("pkill -f 'react-native'");
 

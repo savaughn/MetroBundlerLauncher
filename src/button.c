@@ -3,29 +3,24 @@
 GtkWidget *create_button(ButtonType type)
 {
   const char *icon_name;
-  const char *label_text;
   const char *tooltip_text;
 
   switch (type)
   {
   case BUTTON_TYPE_START:
     icon_name = "media-playback-start";
-    label_text = "Start Metro Bundler";
     tooltip_text = "Start";
     break;
   case BUTTON_TYPE_TERMINATE:
     icon_name = "media-playback-stop";
-    label_text = "Terminate Metro Bundler";
     tooltip_text = "Stop";
     break;
   case BUTTON_TYPE_RESTART:
     icon_name = "media-playlist-repeat";
-    label_text = "Restart Metro Bundler";
     tooltip_text = "Restart";
     break;
   case BUTTON_TYPE_DARK_MODE:
     icon_name = "dialog-information";
-    label_text = "Toggle Dark Mode";
     tooltip_text = "Toggle Dark Mode";
     break;
   default:
