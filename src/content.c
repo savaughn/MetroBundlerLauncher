@@ -16,7 +16,10 @@ GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
     init_display_box(display_box, widgets);
 
     // Setup the buttons
-    GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 50);
+    // set button_box width to window width
+    gtk_widget_set_size_request(button_box, -1, 10);
+
     init_button_box(button_box, widgets);
 
     // Put the display and button boxes into a main container box
@@ -42,10 +45,34 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     widgets->restart_button = GTK_BUTTON(restart_button);
     widgets->dark_mode_button = GTK_BUTTON(dark_mode_button);
 
-    gtk_box_append(GTK_BOX(button_box), GTK_WIDGET(widgets->start_button));
-    gtk_box_append(GTK_BOX(button_box), GTK_WIDGET(widgets->terminate_button));
-    gtk_box_append(GTK_BOX(button_box), GTK_WIDGET(widgets->restart_button));
-    gtk_box_append(GTK_BOX(button_box), GTK_WIDGET(widgets->dark_mode_button));
+    // Left content
+    // Empty space to the left of the buttons
+    GtkWidget *spacer = gtk_label_new(NULL);
+    gtk_box_append(GTK_BOX(button_box), spacer);
+    gtk_widget_set_hexpand(spacer, FALSE);
+    gtk_widget_set_halign(spacer, GTK_ALIGN_START);
+
+    // Space before the buttons
+    GtkWidget *spacer_before = gtk_label_new(NULL);
+    gtk_widget_set_hexpand(spacer_before, TRUE);
+    gtk_box_append(GTK_BOX(button_box), spacer_before);
+
+    // Center content
+    GtkWidget *center_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 50);
+    gtk_box_append(GTK_BOX(center_box), GTK_WIDGET(widgets->start_button));
+    gtk_box_append(GTK_BOX(center_box), GTK_WIDGET(widgets->terminate_button));
+    gtk_box_append(GTK_BOX(center_box), GTK_WIDGET(widgets->restart_button));
+    gtk_box_append(GTK_BOX(button_box), center_box);
+
+    // Add another expanding empty space after center_hbox to maintain centering
+    GtkWidget *spacer_after = gtk_label_new(NULL);
+    gtk_widget_set_hexpand(spacer_after, TRUE);
+    gtk_box_append(GTK_BOX(button_box), spacer_after);
+
+    // Right content
+    gtk_box_append(GTK_BOX(button_box), GTK_WIDGET(dark_mode_button));
+    gtk_widget_set_hexpand(dark_mode_button, FALSE);
+    gtk_widget_set_halign(dark_mode_button, GTK_ALIGN_END);
 
     // Connect the buttons' "clicked" signals to the callback functions
     g_signal_connect(widgets->start_button, "clicked", G_CALLBACK(on_start_button_clicked), widgets);
@@ -127,5 +154,4 @@ void init_main_box(GtkWidget *main_box, GtkWidget *display_box, GtkWidget *butto
     gtk_widget_set_valign(display_box, GTK_ALIGN_START);
 
     gtk_box_append(GTK_BOX(main_box), button_box);
-    gtk_widget_set_valign(button_box, GTK_ALIGN_END);
 }
