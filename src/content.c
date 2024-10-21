@@ -1,6 +1,48 @@
 #include "content.h"
 #include "actions.h"
 
+#include <cairo.h>
+#include <gtk/gtk.h>
+
+static void draw_circle(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data)
+{
+    // Cast user_data to GdkRGBA
+    GdkRGBA *color = (GdkRGBA *)user_data;
+
+    // Set the background color to transparent
+    cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.0);
+    cairo_paint(cr);
+
+    // Calculate the center and radius of the circle
+    double radius = MIN(width, height) / 10.0; // Calculate the radius
+    double center_x = width / 2.0;             // Center X position
+    double center_y = height / 2.0;            // Center Y position
+
+    // Draw a dark outline around the entire circle
+    cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.75); // Dark color for the outline
+    cairo_set_line_width(cr, 0.5);
+    cairo_arc(cr, center_x, center_y, radius + 2, 0, 2 * G_PI); // Outline the main circle
+    cairo_stroke(cr);
+
+    // Create a radial gradient for the glow effect
+    cairo_pattern_t *gradient = cairo_pattern_create_radial(center_x, center_y, radius, center_x, center_y, radius + 7);
+    cairo_pattern_add_color_stop_rgba(gradient, 1.0, color->red, color->green, color->blue, 0.0); // Transparent color at the outer edge
+    cairo_pattern_add_color_stop_rgba(gradient, 0.0, color->red, color->green, color->blue, 1.0); // Color with full opacity at the center
+
+    // Set the gradient as the source and fill the circle
+    cairo_set_source(cr, gradient);
+    cairo_arc(cr, center_x, center_y, radius + 7, 0, 2 * G_PI); // Draw the glowing area
+    cairo_fill(cr);
+
+    // Draw the main colored circle on top
+    cairo_set_source_rgb(cr, color->red, color->green, color->blue);
+    cairo_arc(cr, center_x, center_y, radius, 0, 2 * G_PI);
+    cairo_fill(cr);
+
+    // Cleanup
+    cairo_pattern_destroy(gradient);
+}
+
 void init_window(GtkWidget *win, GtkWidget *main_box)
 {
     gtk_window_set_title(GTK_WINDOW(win), "Metro Bundler Launcher");
@@ -46,11 +88,31 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     widgets->dark_mode_button = GTK_BUTTON(dark_mode_button);
 
     // Left content
-    // Empty space to the left of the buttons
-    GtkWidget *spacer = gtk_label_new(NULL);
-    gtk_box_append(GTK_BOX(button_box), spacer);
-    gtk_widget_set_hexpand(spacer, FALSE);
-    gtk_widget_set_halign(spacer, GTK_ALIGN_START);
+    GtkWidget *left_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    GtkWidget *drawing_area = gtk_drawing_area_new();
+    gtk_widget_set_size_request(drawing_area, 20, 20);
+    gtk_box_append(GTK_BOX(left_box), drawing_area);
+    gtk_widget_set_hexpand(drawing_area, TRUE);
+    gtk_widget_set_halign(drawing_area, GTK_ALIGN_START);
+    gtk_widget_set_vexpand(drawing_area, TRUE);
+
+    // Define the color (e.g., red)
+    GdkRGBA *circle_color = g_malloc(sizeof(GdkRGBA));
+    circle_color->red = 0.0;
+    circle_color->green = 1.0;
+    circle_color->blue = 0.0;
+    circle_color->alpha = 1.0;
+
+    // Set the drawing function for the drawing area with the color
+    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_circle, circle_color, NULL);
+
+    // Add a label to the right of the circle with port information
+    GtkWidget *port_label = gtk_label_new("8080");
+    gtk_box_append(GTK_BOX(left_box), port_label);
+    gtk_box_append(GTK_BOX(button_box), left_box);
+    gtk_widget_set_hexpand(left_box, FALSE);
+    gtk_widget_set_halign(left_box, GTK_ALIGN_START);
+    gtk_widget_set_valign(left_box, GTK_ALIGN_CENTER);
 
     // Space before the buttons
     GtkWidget *spacer_before = gtk_label_new(NULL);

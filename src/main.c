@@ -9,7 +9,6 @@ static void app_activate(GApplication *app)
     Options options;
     if (read_options_from_application_support(&options) == 0)
     {
-        printf("Dark mode: %d\n", options.dark_mode);
         g_object_set(settings, "gtk-application-prefer-dark-theme", options.dark_mode, NULL);
     } else {
         g_object_set(settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
