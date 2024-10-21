@@ -2,6 +2,7 @@
 #define ACTIONS_H
 
 #include <signal.h> // Include this header for kill() function
+#include <jansson.h>
 
 #include "common.h"
 #include "connection.h"

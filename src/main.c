@@ -6,7 +6,14 @@ static void app_activate(GApplication *app)
 {
     // Enable dark mode by default
     GtkSettings *settings = gtk_settings_get_default();
-    g_object_set(settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
+    Options options;
+    if (read_options_from_application_support(&options) == 0)
+    {
+        printf("Dark mode: %d\n", options.dark_mode);
+        g_object_set(settings, "gtk-application-prefer-dark-theme", options.dark_mode, NULL);
+    } else {
+        g_object_set(settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
+    }
 
     // Create a struct to hold the label and buttons
     Widgets *widgets = g_malloc(sizeof(Widgets));

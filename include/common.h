@@ -8,6 +8,7 @@ typedef struct {
     const char *prefix;
     const char *file;
     gboolean debugger_enabled;
+    gboolean dark_mode;
 } Options;
 
 // Struct to hold label, button widgets, and port entry
