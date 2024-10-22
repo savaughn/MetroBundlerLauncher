@@ -16,7 +16,8 @@ void init_window(GtkWidget *win, GtkWidget *main_box)
 GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
 {
     // Setup the main content
-    GtkWidget *display_box = gtk_grid_new();
+    GtkWidget *display_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_widget_set_size_request(display_box, -1, 10);
     init_display_box(display_box, widgets);
 
     // Setup the buttons
@@ -148,7 +149,7 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 
     // Set the width of each widget to half of the window width
-    gtk_widget_set_size_request(inputs_box, 400, -1);
+    // gtk_widget_set_size_request(inputs_box, 400, -1);
     // gtk_widget_set_size_request(port_label, 200, -1);
 
     // Enable text wrapping for the port_label
@@ -160,7 +161,7 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     // gtk_widget_set_halign(port_label, GTK_ALIGN_CENTER);
 
     // Add widgets to the grid
-    gtk_grid_attach(GTK_GRID(display_box), inputs_box, 0, 0, 1, 1);
+    gtk_box_append(GTK_BOX(display_box), inputs_box);
     // gtk_grid_attach(GTK_GRID(display_box), port_label, 1, 0, 1, 1);
 }
 
