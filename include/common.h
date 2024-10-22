@@ -26,6 +26,7 @@ typedef struct {
   GtkEntry *file_entry;
   GtkCheckButton *hermes_checkbox;
   gboolean is_currently_running;
+  GtkDrawingArea *status_light;
 } Widgets;
 
 typedef enum

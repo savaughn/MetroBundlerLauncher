@@ -1,4 +1,5 @@
 #include "connection.h"
+#include "content.h"
 #include <cairo.h>
 
 // Function to check if something is running on a given port
@@ -48,6 +49,13 @@ gboolean check_connection(gpointer data)
     char *label_text;
     if (is_port_open(port))
     {
+        GdkRGBA *light_color = g_malloc(sizeof(GdkRGBA));
+        light_color->red = GREEN.red;
+        light_color->green = GREEN.green;
+        light_color->blue = GREEN.blue;
+        light_color->alpha = GREEN.alpha;
+
+        gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(widgets->status_light), draw_circle, light_color, g_free);
         gtk_label_set_text(widgets->port_label, port_text);
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);    // Disable the start button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), TRUE); // Enable the terminate button
@@ -58,6 +66,13 @@ gboolean check_connection(gpointer data)
     }
     else
     {
+        GdkRGBA *light_color = g_malloc(sizeof(GdkRGBA));
+        light_color->red = RED.red;
+        light_color->green = RED.green;
+        light_color->blue = RED.blue;
+        light_color->alpha = RED.alpha;
+
+        gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(widgets->status_light), draw_circle, light_color, g_free);
         gtk_label_set_text(widgets->port_label, port_text);
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);      // Enable the start button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), FALSE); // Disable the terminate button

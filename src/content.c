@@ -4,7 +4,7 @@
 #include <cairo.h>
 #include <gtk/gtk.h>
 
-static void draw_circle(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data)
+void draw_circle(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data)
 {
     // Cast user_data to GdkRGBA
     GdkRGBA *color = (GdkRGBA *)user_data;
@@ -92,6 +92,7 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     // Left content
     GtkWidget *left_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     GtkWidget *drawing_area = gtk_drawing_area_new();
+    widgets->status_light = GTK_DRAWING_AREA(drawing_area);
     gtk_widget_set_size_request(drawing_area, 20, 20);
     gtk_box_append(GTK_BOX(left_box), drawing_area);
     gtk_widget_set_hexpand(drawing_area, TRUE);
@@ -103,7 +104,7 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     circle_color->red = RED.red;
     circle_color->green = RED.green;
     circle_color->blue = RED.blue;
-    circle_color->alpha = RED.alpha;
+    circle_color->alpha = RED.alpha;        
 
     // Set the drawing function for the drawing area with the color
     gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_circle, circle_color, g_free);
