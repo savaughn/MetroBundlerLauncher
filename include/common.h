@@ -3,6 +3,9 @@
 
 #include <gtk/gtk.h>
 
+static const GdkRGBA RED = {1.0, 0.0, 0.0, 1.0};
+static const GdkRGBA GREEN = {0.0, 1.0, 0.0, 1.0};
+
 typedef struct {
     const char *port;
     const char *prefix;
@@ -13,7 +16,7 @@ typedef struct {
 
 // Struct to hold label, button widgets, and port entry
 typedef struct {
-  GtkLabel *status_label;
+  GtkLabel *port_label;
   GtkButton *start_button;
   GtkButton *terminate_button;
   GtkButton *restart_button;
@@ -22,6 +25,7 @@ typedef struct {
   GtkEntry *port_entry;
   GtkEntry *file_entry;
   GtkCheckButton *hermes_checkbox;
+  gboolean is_currently_running;
 } Widgets;
 
 typedef enum

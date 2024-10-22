@@ -48,8 +48,7 @@ gboolean check_connection(gpointer data)
     char *label_text;
     if (is_port_open(port))
     {
-        label_text = g_strdup_printf("Metro bundler is running on localhost:%d", port);
-        gtk_label_set_text(widgets->status_label, label_text);
+        gtk_label_set_text(widgets->port_label, port_text);
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);    // Disable the start button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), TRUE); // Enable the terminate button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->restart_button), TRUE);   // Enable the restart button
@@ -59,8 +58,7 @@ gboolean check_connection(gpointer data)
     }
     else
     {
-        label_text = g_strdup_printf("No Metro bundler is running on localhost:%d", port);
-        gtk_label_set_text(widgets->status_label, label_text);
+        gtk_label_set_text(widgets->port_label, port_text);
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);      // Enable the start button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), FALSE); // Disable the terminate button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->restart_button), FALSE);   // Disable the restart button
@@ -68,7 +66,6 @@ gboolean check_connection(gpointer data)
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), TRUE);          // Enable the IP entry
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), TRUE);   // Enable the Hermes checkbox
     }
-    g_free(label_text);
 
     return TRUE; // Continue calling this function
 }

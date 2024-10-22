@@ -81,11 +81,13 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     GtkWidget *terminate_button = create_button(BUTTON_TYPE_TERMINATE);
     GtkWidget *restart_button = create_button(BUTTON_TYPE_RESTART);
     GtkWidget *dark_mode_button = create_button(BUTTON_TYPE_DARK_MODE);
+    GtkWidget *port_label = gtk_label_new("");
 
     widgets->start_button = GTK_BUTTON(start_button);
     widgets->terminate_button = GTK_BUTTON(terminate_button);
     widgets->restart_button = GTK_BUTTON(restart_button);
     widgets->dark_mode_button = GTK_BUTTON(dark_mode_button);
+    widgets->port_label = GTK_LABEL(port_label);
 
     // Left content
     GtkWidget *left_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -98,16 +100,15 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
 
     // Define the color (e.g., red)
     GdkRGBA *circle_color = g_malloc(sizeof(GdkRGBA));
-    circle_color->red = 0.0;
-    circle_color->green = 1.0;
-    circle_color->blue = 0.0;
-    circle_color->alpha = 1.0;
+    circle_color->red = RED.red;
+    circle_color->green = RED.green;
+    circle_color->blue = RED.blue;
+    circle_color->alpha = RED.alpha;
 
     // Set the drawing function for the drawing area with the color
-    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_circle, circle_color, NULL);
+    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_circle, circle_color, g_free);
 
     // Add a label to the right of the circle with port information
-    GtkWidget *port_label = gtk_label_new("8080");
     gtk_box_append(GTK_BOX(left_box), port_label);
     gtk_box_append(GTK_BOX(button_box), left_box);
     gtk_widget_set_hexpand(left_box, FALSE);
@@ -157,13 +158,11 @@ GtkWidget *init_entry_widget(GtkEntry *entry, const char *label_text, const char
 
 void init_display_box(GtkWidget *display_box, Widgets *widgets)
 {
-    GtkWidget *status_label = gtk_label_new("");
     GtkWidget *prefix_entry = gtk_entry_new();
     GtkWidget *port_entry = gtk_entry_new();
     GtkWidget *file_entry = gtk_entry_new();
     GtkWidget *hermes_checkbox = gtk_check_button_new_with_label("Enable Hermes Debugger");
 
-    widgets->status_label = GTK_LABEL(status_label);
     widgets->prefix_entry = GTK_ENTRY(prefix_entry);
     widgets->port_entry = GTK_ENTRY(port_entry);
     widgets->file_entry = GTK_ENTRY(file_entry);
@@ -186,20 +185,20 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 
     // Set the width of each widget to half of the window width
-    gtk_widget_set_size_request(inputs_box, 200, -1);
-    gtk_widget_set_size_request(status_label, 200, -1);
+    gtk_widget_set_size_request(inputs_box, 400, -1);
+    // gtk_widget_set_size_request(port_label, 200, -1);
 
-    // Enable text wrapping for the status_label
-    gtk_label_set_wrap(GTK_LABEL(status_label), TRUE);
-    gtk_label_set_wrap_mode(GTK_LABEL(status_label), PANGO_WRAP_WORD);
+    // Enable text wrapping for the port_label
+    // gtk_label_set_wrap(GTK_LABEL(port_label), TRUE);
+    // gtk_label_set_wrap_mode(GTK_LABEL(port_label), PANGO_WRAP_WORD);
 
-    // Center the text within the status_label
-    gtk_label_set_xalign(GTK_LABEL(status_label), 0.5);
-    gtk_widget_set_halign(status_label, GTK_ALIGN_CENTER);
+    // Center the text within the port_label
+    // gtk_label_set_xalign(GTK_LABEL(port_label), 0.5);
+    // gtk_widget_set_halign(port_label, GTK_ALIGN_CENTER);
 
     // Add widgets to the grid
     gtk_grid_attach(GTK_GRID(display_box), inputs_box, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(display_box), status_label, 1, 0, 1, 1);
+    // gtk_grid_attach(GTK_GRID(display_box), port_label, 1, 0, 1, 1);
 }
 
 void init_main_box(GtkWidget *main_box, GtkWidget *display_box, GtkWidget *button_box)
