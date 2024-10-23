@@ -192,6 +192,7 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE);
 
     Options options = {port_text, prefix_text, file_text, debugger_enabled};
+    // TODO: https://github.com/savaughn/metro_launcher/issues/1
     save_options_to_application_support(&options);
 
     // Set up a periodic check for the connection and update the label
