@@ -232,5 +232,7 @@ void on_dark_mode_button_clicked(GtkButton *button, gpointer user_data)
     g_object_get(settings, "gtk-application-prefer-dark-theme", &dark_mode, NULL);
     g_object_set(settings, "gtk-application-prefer-dark-theme", !dark_mode, NULL);
 
+    Options *options = (Options *)user_data;
+    options->dark_mode = !dark_mode;
     update_single_option_to_application_support("dark_mode", dark_mode ? json_boolean(false) : json_boolean(true));
 }

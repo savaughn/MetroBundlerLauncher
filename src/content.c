@@ -25,7 +25,16 @@ GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
     // set button_box width to window width
     gtk_widget_set_size_request(button_box, -1, 10);
 
-    init_button_box(button_box, widgets);
+    Options options;
+    if (read_options_from_application_support(&options) == 0)
+    {
+        gtk_editable_set_text(GTK_EDITABLE(widgets->port_entry), options.port);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), options.prefix);
+        gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), options.file);
+        gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox), options.debugger_enabled);
+    }
+
+    init_button_box(button_box, widgets, &options);
 
     // Put the display and button boxes into a main container box
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -38,7 +47,7 @@ GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
     return win;
 }
 
-void init_button_box(GtkWidget *button_box, Widgets *widgets)
+void init_button_box(GtkWidget *button_box, Widgets *widgets, Options *options)
 {
     GtkWidget *start_button = create_button(BUTTON_TYPE_START);
     GtkWidget *terminate_button = create_button(BUTTON_TYPE_TERMINATE);
@@ -108,11 +117,6 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     g_signal_connect(widgets->dark_mode_button, "clicked", G_CALLBACK(on_dark_mode_button_clicked), widgets);
 }
 
-void init_entry_widget(GtkEntry *entry, const char *label_text, const char *placeholder_text)
-{
-    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), placeholder_text);
-}
-
 void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
 {
     GtkWidget *prefix_entry = gtk_entry_new();
@@ -125,16 +129,7 @@ void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
     widgets->file_entry = GTK_ENTRY(file_entry);
     widgets->hermes_checkbox = GTK_CHECK_BUTTON(hermes_checkbox);
 
-    Options options;
-    if (read_options_from_application_support(&options) == 0)
-    {
-        gtk_editable_set_text(GTK_EDITABLE(widgets->port_entry), options.port);
-        gtk_editable_set_text(GTK_EDITABLE(widgets->prefix_entry), options.prefix);
-        gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), options.file);
-        gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox), options.debugger_enabled);
-    }
-
-    gtk_entry_set_placeholder_text(widgets->file_entry, "RN project root");
+    gtk_entry_set_placeholder_text(widgets->file_entry, "project root");
     gtk_entry_set_placeholder_text(widgets->prefix_entry, "env vars");
     gtk_entry_set_placeholder_text(widgets->port_entry, "port");
 
