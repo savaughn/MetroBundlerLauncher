@@ -1,4 +1,4 @@
-name: Build MacOS x86
+name: Build MacOS
 
 on:
   push:
@@ -8,8 +8,10 @@ on:
 
 jobs:
   build:
-
-    runs-on: macos-13
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, macos-13]
 
     steps:
     - uses: actions/checkout@v4
