@@ -67,7 +67,7 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     circle_color->red = RED.red;
     circle_color->green = RED.green;
     circle_color->blue = RED.blue;
-    circle_color->alpha = RED.alpha;        
+    circle_color->alpha = RED.alpha;
 
     // Set the drawing function for the drawing area with the color
     gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_circle, circle_color, g_free);
@@ -143,26 +143,12 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
         gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox), options.debugger_enabled);
     }
 
+    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->file_entry, "", "RN project root"));
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->prefix_entry, "", "env vars"));
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "", "port"));
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->file_entry, "", "RN project root"));
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 
-    // Set the width of each widget to half of the window width
-    // gtk_widget_set_size_request(inputs_box, 400, -1);
-    // gtk_widget_set_size_request(port_label, 200, -1);
-
-    // Enable text wrapping for the port_label
-    // gtk_label_set_wrap(GTK_LABEL(port_label), TRUE);
-    // gtk_label_set_wrap_mode(GTK_LABEL(port_label), PANGO_WRAP_WORD);
-
-    // Center the text within the port_label
-    // gtk_label_set_xalign(GTK_LABEL(port_label), 0.5);
-    // gtk_widget_set_halign(port_label, GTK_ALIGN_CENTER);
-
-    // Add widgets to the grid
     gtk_box_append(GTK_BOX(display_box), inputs_box);
-    // gtk_grid_attach(GTK_GRID(display_box), port_label, 1, 0, 1, 1);
 }
 
 void init_main_box(GtkWidget *main_box, GtkWidget *display_box, GtkWidget *button_box)

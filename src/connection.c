@@ -57,6 +57,7 @@ gboolean check_connection(gpointer data)
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), FALSE);      // Disable the port entry
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), FALSE);        // Disable the IP entry
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE); // Disable the Hermes checkbox
+        gtk_widget_set_sensitive(GTK_WIDGET(widgets->file_entry), FALSE); // Disable the file entry
     }
     else
     {
@@ -68,6 +69,7 @@ gboolean check_connection(gpointer data)
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), TRUE);        // Enable the port entry
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), TRUE);          // Enable the IP entry
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), TRUE);   // Enable the Hermes checkbox
+        gtk_widget_set_sensitive(GTK_WIDGET(widgets->file_entry), TRUE);   // Enable the file entry
     }
 
     return TRUE; // Continue calling this function
