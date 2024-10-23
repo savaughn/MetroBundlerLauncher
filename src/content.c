@@ -140,10 +140,13 @@ void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
 
     gtk_box_append(GTK_BOX(inputs_box), GTK_WIDGET(widgets->file_entry));
     gtk_box_append(GTK_BOX(inputs_box), GTK_WIDGET(widgets->prefix_entry));
-    gtk_box_append(GTK_BOX(inputs_box), GTK_WIDGET(widgets->port_entry));
 
-    gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
+    GtkWidget *port_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_box_append(GTK_BOX(port_box), GTK_WIDGET(widgets->port_entry));
+    gtk_box_append(GTK_BOX(port_box), hermes_checkbox);
 
+    gtk_box_append(GTK_BOX(inputs_box), port_box);
+    
     // Set hexpand to TRUE for the inputs_box
     gtk_widget_set_hexpand(inputs_box, TRUE);
 }
