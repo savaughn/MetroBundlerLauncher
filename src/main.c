@@ -12,6 +12,13 @@ static void app_activate(GApplication *app)
         g_object_set(settings, "gtk-application-prefer-dark-theme", options.dark_mode, NULL);
     } else {
         g_object_set(settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
+        printf("Options file not found, creating a new one\n");
+        options.port = g_strdup_printf("%d", DEFAULT_PORT);
+        options.prefix = "";
+        options.file = "";
+        options.debugger_enabled = FALSE;
+        options.dark_mode = TRUE;
+        save_options_to_application_support(&options);
     }
 
     // Create a struct to hold the label and buttons

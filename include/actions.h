@@ -15,5 +15,6 @@ void on_terminate_button_clicked(GtkButton *button, gpointer data);
 void on_restart_button_clicked(GtkButton *button, gpointer data);
 void on_dark_mode_button_clicked(GtkButton *button, gpointer user_data);
 int read_options_from_application_support(Options *options);
+int save_options_to_application_support(const Options *options);
 
 #endif // ACTIONS_H

@@ -2,7 +2,6 @@
 #include <sys/stat.h>
 #include "actions.h"
 
-static int save_options_to_application_support(const Options *options);
 static int update_single_option_to_application_support(const char *key, json_t *value);
 
 static int update_single_option_to_application_support(const char *key, json_t *value)
@@ -86,7 +85,7 @@ int read_options_from_application_support(Options *options)
     return 0;
 }
 
-static int save_options_to_application_support(const Options *options)
+int save_options_to_application_support(const Options *options)
 {
     // Get the home directory
     const char *home = getenv("HOME");
@@ -114,6 +113,7 @@ static int save_options_to_application_support(const Options *options)
     json_object_set_new(root, "prefix", json_string(options->prefix));
     json_object_set_new(root, "file", json_string(options->file));
     json_object_set_new(root, "debugger_enabled", json_boolean(options->debugger_enabled));
+    json_object_set_new(root, "dark_mode", json_boolean(options->dark_mode));
 
     // Write the JSON object to the file
     FILE *fp = fopen(options_path, "w");
