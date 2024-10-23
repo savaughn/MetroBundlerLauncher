@@ -16,9 +16,9 @@ void init_window(GtkWidget *win, GtkWidget *main_box)
 GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
 {
     // Setup the main content
-    GtkWidget *display_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_widget_set_size_request(display_box, -1, 10);
-    init_display_box(display_box, widgets);
+    GtkWidget *inputs_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_widget_set_size_request(inputs_box, 400, 10);
+    init_inputs_box(inputs_box, widgets);
 
     // Setup the buttons
     GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 50);
@@ -29,7 +29,7 @@ GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
 
     // Put the display and button boxes into a main container box
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    init_main_box(main_box, display_box, button_box);
+    init_main_box(main_box, inputs_box, button_box);
 
     // Create the main window and add the main container box
     GtkWidget *win = gtk_application_window_new(GTK_APPLICATION(app));
@@ -113,14 +113,18 @@ GtkWidget *init_entry_widget(GtkEntry *entry, const char *label_text, const char
     GtkWidget *label = gtk_label_new(label_text);
     GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_entry_set_placeholder_text(GTK_ENTRY(entry), placeholder_text);
-
+    
     gtk_box_append(GTK_BOX(hbox), label);
     gtk_box_append(GTK_BOX(hbox), GTK_WIDGET(entry));
+
+    // Set hexpand to TRUE for both the entry and its container
+    gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
+    gtk_widget_set_hexpand(hbox, TRUE);
 
     return hbox;
 }
 
-void init_display_box(GtkWidget *display_box, Widgets *widgets)
+void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
 {
     GtkWidget *prefix_entry = gtk_entry_new();
     GtkWidget *port_entry = gtk_entry_new();
@@ -131,8 +135,6 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     widgets->port_entry = GTK_ENTRY(port_entry);
     widgets->file_entry = GTK_ENTRY(file_entry);
     widgets->hermes_checkbox = GTK_CHECK_BUTTON(hermes_checkbox);
-
-    GtkWidget *inputs_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 
     Options options;
     if (read_options_from_application_support(&options) == 0)
@@ -148,10 +150,11 @@ void init_display_box(GtkWidget *display_box, Widgets *widgets)
     gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "", "port"));
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 
-    gtk_box_append(GTK_BOX(display_box), inputs_box);
+    // Set hexpand to TRUE for the inputs_box
+    gtk_widget_set_hexpand(inputs_box, TRUE);
 }
 
-void init_main_box(GtkWidget *main_box, GtkWidget *display_box, GtkWidget *button_box)
+void init_main_box(GtkWidget *main_box, GtkWidget *inputs_box, GtkWidget *button_box)
 {
     // Add padding to the main container box
     gtk_widget_set_margin_top(main_box, 10);
@@ -159,10 +162,9 @@ void init_main_box(GtkWidget *main_box, GtkWidget *display_box, GtkWidget *butto
     gtk_widget_set_margin_start(main_box, 10);
     gtk_widget_set_margin_end(main_box, 10);
 
-    // Add display_box to the top and button_box to the bottom
-    gtk_box_append(GTK_BOX(main_box), display_box);
-    gtk_widget_set_vexpand(display_box, TRUE);
-    gtk_widget_set_valign(display_box, GTK_ALIGN_START);
+    // Add inputs_box to the top and button_box to the bottom
+    gtk_box_append(GTK_BOX(main_box), inputs_box);
+    gtk_widget_set_valign(inputs_box, GTK_ALIGN_START);
 
     gtk_box_append(GTK_BOX(main_box), button_box);
 }

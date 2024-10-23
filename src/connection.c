@@ -1,6 +1,5 @@
 #include "connection.h"
 #include "draw.h"
-#include <cairo.h>
 
 // Function to check if something is running on a given port
 int is_port_open(int port)

@@ -13,7 +13,7 @@ static void app_activate(GApplication *app)
     } else {
         g_object_set(settings, "gtk-application-prefer-dark-theme", TRUE, NULL);
         printf("Options file not found, creating a new one\n");
-        options.port = g_strdup_printf("%d", DEFAULT_PORT);
+        options.port = "";
         options.prefix = "";
         options.file = "";
         options.debugger_enabled = FALSE;
