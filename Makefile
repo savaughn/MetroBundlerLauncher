@@ -13,7 +13,7 @@ TARGET = $(BUILD_DIR)/main
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 
 # GTK4 flags
-CFLAGS = $(shell pkg-config --cflags gtk4 cairo) -I$(INCLUDE_DIR)
+CFLAGS = $(shell pkg-config --cflags gtk4 cairo jansson) -I$(INCLUDE_DIR)
 LIBS = $(shell pkg-config --libs gtk4 cairo jansson)
 
 # Build target
