@@ -108,20 +108,9 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets)
     g_signal_connect(widgets->dark_mode_button, "clicked", G_CALLBACK(on_dark_mode_button_clicked), widgets);
 }
 
-GtkWidget *init_entry_widget(GtkEntry *entry, const char *label_text, const char *placeholder_text)
+void init_entry_widget(GtkEntry *entry, const char *label_text, const char *placeholder_text)
 {
-    GtkWidget *label = gtk_label_new(label_text);
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_entry_set_placeholder_text(GTK_ENTRY(entry), placeholder_text);
-    
-    gtk_box_append(GTK_BOX(hbox), label);
-    gtk_box_append(GTK_BOX(hbox), GTK_WIDGET(entry));
-
-    // Set hexpand to TRUE for both the entry and its container
-    gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
-    gtk_widget_set_hexpand(hbox, TRUE);
-
-    return hbox;
 }
 
 void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
@@ -145,9 +134,14 @@ void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
         gtk_check_button_set_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox), options.debugger_enabled);
     }
 
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->file_entry, "", "RN project root"));
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->prefix_entry, "", "env vars"));
-    gtk_box_append(GTK_BOX(inputs_box), init_entry_widget(widgets->port_entry, "", "port"));
+    gtk_entry_set_placeholder_text(widgets->file_entry, "RN project root");
+    gtk_entry_set_placeholder_text(widgets->prefix_entry, "env vars");
+    gtk_entry_set_placeholder_text(widgets->port_entry, "port");
+
+    gtk_box_append(GTK_BOX(inputs_box), GTK_WIDGET(widgets->file_entry));
+    gtk_box_append(GTK_BOX(inputs_box), GTK_WIDGET(widgets->prefix_entry));
+    gtk_box_append(GTK_BOX(inputs_box), GTK_WIDGET(widgets->port_entry));
+
     gtk_box_append(GTK_BOX(inputs_box), hermes_checkbox);
 
     // Set hexpand to TRUE for the inputs_box
