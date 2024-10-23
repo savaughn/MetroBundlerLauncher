@@ -41,5 +41,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: MetroBundlerLauncher
+        name: MetroBundlerLauncher-${{ matrix.os == 'macos-latest' && 'arm' || 'x86' }}
         path: build/
