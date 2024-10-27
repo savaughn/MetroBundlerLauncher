@@ -54,7 +54,15 @@ static void set_widgets_state(Widgets *widgets, WidgetsState state)
     }
     else
     {
-        gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);      // Enable the start button
+        // Only enable the start button if the entry is not empty
+        if (strcmp(gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry)), "") == 0)
+        {
+            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);
+        }
+        else
+        {
+            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);
+        }
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), FALSE); // Disable the terminate button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->restart_button), FALSE);   // Disable the restart button
         gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), TRUE);        // Enable the port entry
@@ -74,7 +82,7 @@ gboolean check_connection(gpointer data)
     {
         port = DEFAULT_PORT;
     }
-    char *label_text;
+
     if (is_port_open(port))
     {
         draw_green_status_light(widgets);

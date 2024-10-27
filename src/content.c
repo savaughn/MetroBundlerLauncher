@@ -144,6 +144,9 @@ void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
     
     // Set hexpand to TRUE for the inputs_box
     gtk_widget_set_hexpand(inputs_box, TRUE);
+
+    // field validation for file_entry
+    g_signal_connect(widgets->file_entry, "changed", G_CALLBACK(validate_entry_widget), widgets);
 }
 
 void init_main_box(GtkWidget *main_box, GtkWidget *inputs_box, GtkWidget *button_box)
