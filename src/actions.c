@@ -5,6 +5,79 @@
 // Private
 static int update_single_option_to_application_support(const char *key, json_t *value);
 static gboolean get_json_dark_mode_setting(void);
+static gboolean is_valid_directory(const char *path);
+
+static gboolean is_valid_directory(const char *path)
+{
+    char *_path = g_strdup(path);
+
+    // replace ~ with $HOME
+    if (_path[0] == '~')
+    {
+        const char *home = getenv("HOME");
+        if (home == NULL)
+        {
+            return FALSE;
+        }
+        char *new_path = g_strdup_printf("%s%s", home, _path + 1);
+        _path = new_path;
+    }
+
+    // Remove trailing slashes
+    while (_path[strlen(_path) - 1] == '/')
+    {
+        _path[strlen(_path) - 1] = '\0';
+    }
+
+    // Check for package.json file in the specified directory
+    char *package_json_path = g_strdup_printf("%s/package.json", _path);
+
+    struct stat st = {0};
+    if (stat(package_json_path, &st) == -1)
+    {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+void validate_entry_widget(GtkWidget *entry, gpointer data)
+{
+    Widgets *widgets = (Widgets *)data;
+
+    GtkCssProvider *provider = gtk_css_provider_new();
+    const char *error_css = ".error {border-color: red;}";
+    gtk_css_provider_load_from_string(provider, error_css);
+    gtk_style_context_add_provider_for_display(gdk_display_get_default(),
+                                               GTK_STYLE_PROVIDER(provider),
+                                               GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+    if (strcmp(gtk_editable_get_text(GTK_EDITABLE(entry)), "") == 0)
+    {
+        gtk_widget_add_css_class(entry, "error");
+
+        // Disable the start button if the entry is empty
+        gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);
+    }
+    else
+    {
+        // Validate the entry widget path
+        if (!is_valid_directory(gtk_editable_get_text(GTK_EDITABLE(entry))))
+        {
+            gtk_widget_add_css_class(entry, "error");
+            // Disable the start button if the entry is empty
+            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);
+        }
+        else
+        {
+            // Remove the error class from the entry widget
+            gtk_widget_remove_css_class(entry, "error");
+
+            // Enable the start button if the entry is not empty
+            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);
+        }
+    }
+}
 
 static gboolean get_json_dark_mode_setting()
 {
@@ -171,11 +244,6 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     }
 
     const char *file_text = gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry));
-    if (strlen(file_text) == 0)
-    {
-        gtk_editable_set_text(GTK_EDITABLE(widgets->file_entry), "");
-        file_text = gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry));
-    }
 
     char *p_cmd = g_strdup_printf("cd %s && %s npx react-native start --port %d", file_text, prefix_text, port);
 
@@ -209,8 +277,6 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
         .file = g_strdup(file_text),
         .debugger_enabled = debugger_enabled,
         .dark_mode = get_json_dark_mode_setting()};
-
-    
 
     save_options_to_application_support(&options);
 
@@ -249,7 +315,7 @@ void on_restart_button_clicked(GtkButton *button, gpointer data)
     on_start_button_clicked(button, data);
 }
 
-void on_dark_mode_button_clicked(GtkButton *button, gpointer user_data)
+void on_dark_mode_button_clicked(GtkButton *button, gpointer data)
 {
     GtkSettings *settings = gtk_settings_get_default();
     static gboolean dark_mode;
@@ -257,7 +323,7 @@ void on_dark_mode_button_clicked(GtkButton *button, gpointer user_data)
     g_object_set(settings, "gtk-application-prefer-dark-theme", !dark_mode, NULL);
 
     // Sync context options struct
-    Options *options = (Options *)user_data;
+    Options *options = (Options *)data;
     options->dark_mode = !dark_mode;
 
     // Sync dark mode setting to application support
