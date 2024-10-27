@@ -5,18 +5,55 @@
 // Private
 static int update_single_option_to_application_support(const char *key, json_t *value);
 static gboolean get_json_dark_mode_setting(void);
+static gboolean is_valid_directory(const char *path);
+
+static gboolean is_valid_directory(const char *path)
+{
+    char *_path = g_strdup(path);
+
+    // replace ~ with $HOME
+    if (_path[0] == '~')
+    {
+        const char *home = getenv("HOME");
+        if (home == NULL)
+        {
+            return FALSE;
+        }
+        char *new_path = g_strdup_printf("%s%s", home, _path + 1);
+        _path = new_path;
+    }
+
+    // Remove trailing slashes
+    while (_path[strlen(_path) - 1] == '/')
+    {
+        _path[strlen(_path) - 1] = '\0';
+    }
+
+    // Check for package.json file in the specified directory
+    char *package_json_path = g_strdup_printf("%s/package.json", _path);
+
+    struct stat st = {0};
+    if (stat(package_json_path, &st) == -1)
+    {
+        return FALSE;
+    }
+
+    return TRUE;
+}
 
 void validate_entry_widget(GtkWidget *entry, gpointer data)
 {
     Widgets *widgets = (Widgets *)data;
+
+    GtkCssProvider *provider = gtk_css_provider_new();
+    const char *error_css = ".error {border-color: red;}";
+    gtk_css_provider_load_from_string(provider, error_css);
+    gtk_style_context_add_provider_for_display(gdk_display_get_default(),
+                                               GTK_STYLE_PROVIDER(provider),
+                                               GTK_STYLE_PROVIDER_PRIORITY_USER);
+
     if (strcmp(gtk_editable_get_text(GTK_EDITABLE(entry)), "") == 0)
     {
-        GtkCssProvider *provider = gtk_css_provider_new();
-        const char *error_css = ".error {border-color: red;}";
-        gtk_css_provider_load_from_string(provider, error_css);
-        gtk_style_context_add_provider_for_display(gdk_display_get_default(),
-                                                   GTK_STYLE_PROVIDER(provider),
-                                                   GTK_STYLE_PROVIDER_PRIORITY_USER);
         gtk_widget_add_css_class(entry, "error");
 
         // Disable the start button if the entry is empty
@@ -24,10 +61,21 @@ void validate_entry_widget(GtkWidget *entry, gpointer data)
     }
     else
     {
-        gtk_widget_remove_css_class(entry, "error");
+        // Validate the entry widget path
+        if (!is_valid_directory(gtk_editable_get_text(GTK_EDITABLE(entry))))
+        {
+            gtk_widget_add_css_class(entry, "error");
+            // Disable the start button if the entry is empty
+            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);
+        }
+        else
+        {
+            // Remove the error class from the entry widget
+            gtk_widget_remove_css_class(entry, "error");
 
-        // Enable the start button if the entry is not empty
-        gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);
+            // Enable the start button if the entry is not empty
+            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);
+        }
     }
 }
 
