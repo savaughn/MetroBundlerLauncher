@@ -114,7 +114,7 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets, Options *options)
     g_signal_connect(widgets->start_button, "clicked", G_CALLBACK(on_start_button_clicked), widgets);
     g_signal_connect(widgets->terminate_button, "clicked", G_CALLBACK(on_terminate_button_clicked), widgets);
     g_signal_connect(widgets->restart_button, "clicked", G_CALLBACK(on_restart_button_clicked), widgets);
-    g_signal_connect(widgets->dark_mode_button, "clicked", G_CALLBACK(on_dark_mode_button_clicked), widgets);
+    g_signal_connect(widgets->dark_mode_button, "clicked", G_CALLBACK(on_dark_mode_button_clicked), options);
 }
 
 void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)

@@ -2,7 +2,14 @@
 #include <sys/stat.h>
 #include "actions.h"
 
-static int update_single_option_to_application_support(const char *key, json_t *value);
+static gboolean get_json_dark_mode_setting()
+{
+    GtkSettings *settings = gtk_settings_get_default();
+    static gboolean dark_mode;
+    g_object_get(settings, "gtk-application-prefer-dark-theme", &dark_mode, NULL);
+
+    return dark_mode;
+}
 
 static int update_single_option_to_application_support(const char *key, json_t *value)
 {
@@ -191,9 +198,21 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), FALSE);
     gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE);
 
-    Options options = {port_text, prefix_text, file_text, debugger_enabled};
-    // TODO: https://github.com/savaughn/metro_launcher/issues/1
+    // Update the options with the new values from the UI input fields
+    Options options = {
+        .port = g_strdup_printf("%d", port),
+        .prefix = g_strdup(prefix_text),
+        .file = g_strdup(file_text),
+        .debugger_enabled = debugger_enabled,
+        .dark_mode = get_json_dark_mode_setting()};
+
+    
+
     save_options_to_application_support(&options);
+
+    g_free((gpointer)options.port);
+    g_free((gpointer)options.prefix);
+    g_free((gpointer)options.file);
 
     // Set up a periodic check for the connection and update the label
     g_timeout_add(1000, check_connection, widgets); // Check every 1 second
@@ -233,7 +252,10 @@ void on_dark_mode_button_clicked(GtkButton *button, gpointer user_data)
     g_object_get(settings, "gtk-application-prefer-dark-theme", &dark_mode, NULL);
     g_object_set(settings, "gtk-application-prefer-dark-theme", !dark_mode, NULL);
 
+    // Sync context options struct
     Options *options = (Options *)user_data;
     options->dark_mode = !dark_mode;
+
+    // Sync dark mode setting to application support
     update_single_option_to_application_support("dark_mode", dark_mode ? json_boolean(false) : json_boolean(true));
 }
