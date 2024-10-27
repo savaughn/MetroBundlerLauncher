@@ -37,6 +37,8 @@ typedef enum
   BUTTON_TYPE_DARK_MODE
 } ButtonType;
 
+void LOG(const char *restrict fmt, ...);
+
 #define DEFAULT_PORT 8080 // Define the default port
 
 #endif // COMMON_H
