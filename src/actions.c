@@ -2,6 +2,10 @@
 #include <sys/stat.h>
 #include "actions.h"
 
+// Private
+static int update_single_option_to_application_support(const char *key, json_t *value);
+static gboolean get_json_dark_mode_setting(void);
+
 static gboolean get_json_dark_mode_setting()
 {
     GtkSettings *settings = gtk_settings_get_default();

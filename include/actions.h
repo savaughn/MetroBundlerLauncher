@@ -7,11 +7,6 @@
 #include "common.h"
 #include "connection.h"
 
-// Private
-int update_single_option_to_application_support(const char *key, json_t *value);
-gboolean get_json_dark_mode_setting(void);
-
-// Public
 // Callback function for the start button click
 void on_start_button_clicked(GtkButton *button, gpointer data);
 // Callback function for the terminate button click
