@@ -33,7 +33,7 @@ bundle: $(TARGET)
 
 # Clean up
 clean:
-	rm -f $(TARGET)
+	rm -rf $(BUILD_DIR)
 
 # Phony targets
 .PHONY: clean run bundle
