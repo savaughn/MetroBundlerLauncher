@@ -6,7 +6,7 @@ BUNDLE_CONTENTS="${BUNDLE_DIR}/Contents"
 EXECUTABLE="main"
 SRC_DIR="src"
 BUNDLE_FILE="${APP_NAME}.bundle"
-ICONS_DIR="${SRC_DIR}/icons"
+ICONS_DIR="assets"
 
 # Create the app bundle structure
 mkdir -p "${BUNDLE_CONTENTS}/MacOS"
@@ -17,7 +17,7 @@ mkdir -p "${BUNDLE_CONTENTS}/Frameworks"
 cp "build/${EXECUTABLE}" "${BUNDLE_CONTENTS}/MacOS/"
 
 # Copy icon file if exists
-# cp "${ICONS_DIR}/icon.icns" "${BUNDLE_CONTENTS}/Resources/" 
+cp "${ICONS_DIR}/icon.icns" "${BUNDLE_CONTENTS}/Resources/" 
 
 # Create the Info.plist file
 cat <<EOF > "${BUNDLE_CONTENTS}/Info.plist"
@@ -40,7 +40,9 @@ cat <<EOF > "${BUNDLE_CONTENTS}/Info.plist"
     <key>CFBundleIconFile</key>
     <string>icon.icns</string>
     <key>CFBundleExecutable</key>
-    <string>launcher.sh</string> 
+    <string>launcher.sh</string>
+    <key>CFBundleIconFile</key>
+    <string>icon.icns</string> 
 </dict>
 </plist>
 EOF
