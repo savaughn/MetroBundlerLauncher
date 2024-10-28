@@ -21,7 +21,7 @@ This requires the minimum React Native development environment to be set up.
     brew install node
 
 #### download and install latest release of metro_launcher
-Get the latest release from [release page](github.com/savaughn/metro_launcher/releases). Move the .app file to Applications folder. Right click and open the app on first launch.
+Get the latest release from [release page](github.com/savaughn/metro_launcher/releases). Open the installer dmg and move the app to Applications folder. Right click and open the app on first launch to bypass security settings.
 
 ### Usage
 - `working directory`: Input a project directory path in the text field labeled "project root".
