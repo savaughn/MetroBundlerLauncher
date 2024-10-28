@@ -4,7 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/include/**",
-                "/opt/homebrew/Cellar/**"
+                "/opt/homebrew/Cellar/gtk4/4.16.3/include/gtk-4.0/**"
             ],
             "defines": [],
             "macFrameworkPath": [
