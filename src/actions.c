@@ -1,6 +1,7 @@
 #include <jansson.h>
 #include <sys/stat.h>
 #include "actions.h"
+#include "widget_state.h"
 
 // Private
 static int update_single_option_to_application_support(const char *key, json_t *value);
@@ -52,30 +53,21 @@ void validate_entry_widget(GtkWidget *entry, gpointer data)
                                                GTK_STYLE_PROVIDER(provider),
                                                GTK_STYLE_PROVIDER_PRIORITY_USER);
 
-    if (strcmp(gtk_editable_get_text(GTK_EDITABLE(entry)), "") == 0)
+    if (strcmp(gtk_editable_get_text(GTK_EDITABLE(entry)), "") == 0 ||
+        !is_valid_directory(gtk_editable_get_text(GTK_EDITABLE(entry))))
     {
         gtk_widget_add_css_class(entry, "error");
 
         // Disable the start button if the entry is empty
-        gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);
+        update_widget_ui_state(widgets, STATE_ERROR);
     }
     else
     {
-        // Validate the entry widget path
-        if (!is_valid_directory(gtk_editable_get_text(GTK_EDITABLE(entry))))
-        {
-            gtk_widget_add_css_class(entry, "error");
-            // Disable the start button if the entry is empty
-            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);
-        }
-        else
-        {
-            // Remove the error class from the entry widget
-            gtk_widget_remove_css_class(entry, "error");
+        // Remove the error class from the entry widget
+        gtk_widget_remove_css_class(entry, "error");
 
-            // Enable the start button if the entry is not empty
-            gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);
-        }
+        // Enable the start button if the entry is not empty
+        update_widget_ui_state(widgets, STATE_IDLE);
     }
 }
 
@@ -264,11 +256,8 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     g_free(p_cmd);
     g_free(osascript_cmd);
 
-    // Immediately disable the start button and port entry
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), FALSE);
+    // Immediately disable the UI
+    update_widget_ui_state(widgets, STATE_RUNNING);
 
     // Update the options with the new values from the UI input fields
     Options options = {
@@ -296,13 +285,7 @@ void on_terminate_button_clicked(GtkButton *button, gpointer data)
     // Terminate the process running on the specified port
     system("pkill -f 'react-native'");
 
-    // Update the label and button states
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->start_button), TRUE);      // Enable the start button
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->terminate_button), FALSE); // Disable the terminate button
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->restart_button), FALSE);   // Disable the restart button
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->prefix_entry), TRUE);      // Enable the IP entry
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->port_entry), TRUE);        // Enable the port entry
-    gtk_widget_set_sensitive(GTK_WIDGET(widgets->hermes_checkbox), TRUE);
+    update_widget_ui_state(widgets, STATE_IDLE);
 }
 
 // Callback function for the restart button click
