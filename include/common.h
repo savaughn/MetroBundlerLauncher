@@ -41,4 +41,11 @@ void LOG(const char *restrict fmt, ...);
 
 #define DEFAULT_PORT 8080 // Define the default port
 
+typedef enum
+{
+    STATE_IDLE, // nothing running
+    STATE_RUNNING,
+    STATE_ERROR
+} WidgetsState;
+
 #endif // COMMON_H
