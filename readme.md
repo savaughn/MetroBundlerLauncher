@@ -6,8 +6,10 @@
 
 Metro Bundler Launcher is a GTK4-based application designed to manage the Metro Bundler for React Native projects.
 
+<p align="center">
 <img width="580" alt="image" src="https://github.com/user-attachments/assets/9a61d21e-53bd-46da-b813-351803d809e1">
 <img width="580" alt="image" src="https://github.com/user-attachments/assets/6611a5d8-483a-4377-b714-9b5c6034c4dd">
+</p>
 
 ## Using Metro Bundler Launcher
 This requires the minimum React Native development environment to be set up. 
