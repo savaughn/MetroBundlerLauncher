@@ -25,7 +25,7 @@ GtkWidget *create_main_window(GApplication *app, Widgets *widgets)
     // set button_box width to window width
     gtk_widget_set_size_request(button_box, -1, 10);
 
-    Options options;
+    Options options = {0};
     if (read_options_from_application_support(&options) == 0)
     {
         gtk_editable_set_text(GTK_EDITABLE(widgets->port_entry), options.port);
@@ -142,7 +142,6 @@ void init_inputs_box(GtkWidget *inputs_box, Widgets *widgets)
 
     gtk_box_append(GTK_BOX(inputs_box), port_box);
     
-    // Set hexpand to TRUE for the inputs_box
     gtk_widget_set_hexpand(inputs_box, TRUE);
 
     // field validation for file_entry
