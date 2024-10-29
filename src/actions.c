@@ -10,6 +10,7 @@ static gboolean is_valid_directory(const char *path);
 
 static gboolean is_valid_directory(const char *path)
 {
+    // Copy the path to a new string to avoid modifying the original
     char *_path = g_strdup(path);
 
     // replace ~ with $HOME
@@ -18,27 +19,34 @@ static gboolean is_valid_directory(const char *path)
         const char *home = getenv("HOME");
         if (home == NULL)
         {
+            g_free(_path);
             return FALSE;
         }
-        char *new_path = g_strdup_printf("%s%s", home, _path + 1);
+        char *new_path = g_build_filename(home, _path + 1, NULL);
+        g_free(_path);
         _path = new_path;
     }
 
     // Remove trailing slashes
-    while (_path[strlen(_path) - 1] == '/')
+    size_t len = strlen(_path);
+    while (len > 0 && _path[len - 1] == '/')
     {
-        _path[strlen(_path) - 1] = '\0';
+        _path[len - 1] = '\0';
+        len--;
     }
 
     // Check for package.json file in the specified directory
-    char *package_json_path = g_strdup_printf("%s/package.json", _path);
+    char *package_json_path = g_build_filename(_path, "package.json", NULL);
+    g_free(_path);
 
     struct stat st = {0};
     if (stat(package_json_path, &st) == -1)
     {
+        g_free(package_json_path);
         return FALSE;
     }
 
+    g_free(package_json_path);
     return TRUE;
 }
 
@@ -53,7 +61,7 @@ void validate_entry_widget(GtkWidget *entry, gpointer data)
                                                GTK_STYLE_PROVIDER(provider),
                                                GTK_STYLE_PROVIDER_PRIORITY_USER);
 
-    if (strcmp(gtk_editable_get_text(GTK_EDITABLE(entry)), "") == 0 ||
+    if (strlen(gtk_editable_get_text(GTK_EDITABLE(entry))) == 0 ||
         !is_valid_directory(gtk_editable_get_text(GTK_EDITABLE(entry))))
     {
         gtk_widget_add_css_class(entry, "error");
@@ -69,12 +77,14 @@ void validate_entry_widget(GtkWidget *entry, gpointer data)
         // Enable the start button if the entry is not empty
         update_widget_ui_state(widgets, STATE_IDLE);
     }
+
+    g_object_unref(provider);
 }
 
 static gboolean get_json_dark_mode_setting()
 {
     GtkSettings *settings = gtk_settings_get_default();
-    static gboolean dark_mode;
+    gboolean dark_mode;
     g_object_get(settings, "gtk-application-prefer-dark-theme", &dark_mode, NULL);
 
     return dark_mode;
@@ -97,6 +107,8 @@ static int update_single_option_to_application_support(const char *key, json_t *
     json_t *root = json_load_file(options_path, 0, &error);
     if (root == NULL)
     {
+        g_warning("Failed to load JSON from file: %s", error.text);
+        g_free(options_path);
         return -1;
     }
 
@@ -107,6 +119,9 @@ static int update_single_option_to_application_support(const char *key, json_t *
     FILE *fp = fopen(options_path, "w");
     if (fp == NULL)
     {
+        g_warning("Failed to open file for writing: %s", options_path);
+        g_free(options_path);
+        json_decref(root);
         return -1;
     }
 
@@ -137,6 +152,8 @@ int read_options_from_application_support(Options *options)
     json_t *root = json_load_file(options_path, 0, &error);
     if (root == NULL)
     {
+        g_warning("Failed to load JSON from file: %s", error.text);
+        g_free(options_path);
         return -1;
     }
 
@@ -195,6 +212,11 @@ int save_options_to_application_support(const Options *options)
     FILE *fp = fopen(options_path, "w");
     if (fp == NULL)
     {
+        g_warning("Failed to open file for writing: %s", options_path);
+        g_free(app_support_path);
+        g_free(options_path);
+        json_decref(root);
+
         return -1;
     }
 
@@ -236,24 +258,22 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     }
 
     const char *file_text = gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry));
-
-    char *p_cmd = g_strdup_printf("cd %s && %s npx react-native start --port %d", file_text, prefix_text, port);
-
-    // append hermes flag if enabled
     gboolean debugger_enabled = gtk_check_button_get_active(GTK_CHECK_BUTTON(widgets->hermes_checkbox));
-    if (debugger_enabled)
-    {
-        p_cmd = g_strdup_printf("%s --experimental-debugger", p_cmd);
-    }
-
     char *osascript_cmd = g_strdup_printf(
-        "osascript -e 'tell application \"Terminal\" to do script \"%s\"'", p_cmd);
+        "osascript -e 'tell application \"Terminal\" to do script \"cd %s && %s npx react-native start --port %d%s\"'",
+        file_text,
+        prefix_text,
+        port,
+        debugger_enabled ? " --experimental-debugger" : "");
+    if (osascript_cmd == NULL)
+    {
+        g_free(osascript_cmd);
+        return;
+    }
 
     // Execute the osascript command to open a new Terminal window and run the command
     system(osascript_cmd);
 
-    // Free the allocated memory for cmd and osascript_cmd
-    g_free(p_cmd);
     g_free(osascript_cmd);
 
     // Immediately disable the UI
@@ -267,7 +287,15 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
         .debugger_enabled = debugger_enabled,
         .dark_mode = get_json_dark_mode_setting()};
 
-    save_options_to_application_support(&options);
+    if (save_options_to_application_support(&options) != 0)
+    {
+        g_warning("Failed to save options to application support");
+
+        g_free((gpointer)options.port);
+        g_free((gpointer)options.prefix);
+        g_free((gpointer)options.file);
+        return;
+    }
 
     g_free((gpointer)options.port);
     g_free((gpointer)options.prefix);
@@ -283,7 +311,15 @@ void on_terminate_button_clicked(GtkButton *button, gpointer data)
     Widgets *widgets = (Widgets *)data;
 
     // Terminate the process running on the specified port
-    system("pkill -f 'react-native'");
+    gchar *output = NULL;
+    gchar *error = NULL;
+    gint exit_status;
+    g_spawn_command_line_sync("pkill -f 'react-native'", &output, &error, &exit_status, NULL);
+    if (exit_status != 0)
+    {
+        g_warning("Failed to terminate process: %s", error);
+    }
+    g_free(output);
 
     update_widget_ui_state(widgets, STATE_IDLE);
 }
@@ -292,7 +328,15 @@ void on_terminate_button_clicked(GtkButton *button, gpointer data)
 void on_restart_button_clicked(GtkButton *button, gpointer data)
 {
     // Terminate the process running on the specified port
-    system("pkill -f 'react-native'");
+    gchar *output = NULL;
+    gchar *error = NULL;
+    gint exit_status;
+    g_spawn_command_line_sync("pkill -f 'react-native'", &output, &error, &exit_status, NULL);
+    if (exit_status != 0)
+    {
+        g_warning("Failed to terminate process: %s", error);
+    }
+    g_free(output);
 
     // Start the process again
     on_start_button_clicked(button, data);
@@ -301,7 +345,7 @@ void on_restart_button_clicked(GtkButton *button, gpointer data)
 void on_dark_mode_button_clicked(GtkButton *button, gpointer data)
 {
     GtkSettings *settings = gtk_settings_get_default();
-    static gboolean dark_mode;
+    gboolean dark_mode;
     g_object_get(settings, "gtk-application-prefer-dark-theme", &dark_mode, NULL);
     g_object_set(settings, "gtk-application-prefer-dark-theme", !dark_mode, NULL);
 

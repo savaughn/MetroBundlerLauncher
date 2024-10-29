@@ -3,6 +3,8 @@
 
 #include <gtk/gtk.h>
 
+#define APPLICATION_ID "com.savaughn.metro_bundler_launcher"
+
 static const GdkRGBA RED = {1.0, 0.0, 0.0, 1.0};
 static const GdkRGBA GREEN = {0.0, 1.0, 0.0, 1.0};
 
