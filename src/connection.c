@@ -39,30 +39,32 @@ int is_port_open(int port)
 // Function to periodically check the connection and update the label
 gboolean check_connection(gpointer data)
 {
-    Widgets *widgets = (Widgets *)data;
-    const char *port_text = gtk_editable_get_text(GTK_EDITABLE(widgets->port_entry));
-    int port = atoi(port_text);
-    if (port == 0)
-    {
-        port = DEFAULT_PORT;
-    }
+  Widgets *widgets = (Widgets *)data;
+  const char *port_text = gtk_editable_get_text(GTK_EDITABLE(widgets->port_entry));
+  const char *file_text = gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry));
+  char *endptr;
+  long port = strtol(port_text, &endptr, 10);
+  if (*endptr != '\0' || port <= 0 || port > 65535)
+  {
+    port = DEFAULT_PORT;
+  }
 
-    if (is_port_open(port))
+  if (is_port_open(port))
+  {
+    draw_green_status_light(widgets);
+    update_widget_ui_state(widgets, STATE_RUNNING);
+  }
+  else
+  {
+    draw_red_status_light(widgets);
+    update_widget_ui_state(widgets, STATE_IDLE);
+    if (strlen(file_text) == 0)
     {
-        draw_green_status_light(widgets);
-        gtk_label_set_text(widgets->port_label, port_text);
-        update_widget_ui_state(widgets, STATE_RUNNING);
+      update_widget_ui_state(widgets, STATE_ERROR);
     }
-    else
-    {
-        draw_red_status_light(widgets);
-        gtk_label_set_text(widgets->port_label, port_text);
-        update_widget_ui_state(widgets, STATE_IDLE);
-        if (strcmp(gtk_editable_get_text(GTK_EDITABLE(widgets->file_entry)), "") == 0)
-        {
-            update_widget_ui_state(widgets, STATE_ERROR);
-        }
-    }
+  }
 
-    return TRUE; // Continue calling this function
+  gtk_label_set_text(widgets->port_label, port_text);
+
+  return TRUE; // Continue calling this function
 }
