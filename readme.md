@@ -38,6 +38,8 @@ Get the latest release from [release page](github.com/savaughn/metro_launcher/re
     - `Restart`: Restart the metro bundler.
     - `Dark Mode`: (lightbulb) Toggle dark mode.
 
+### Options
+Options are stored in the `~/Library/Application Support/MetroBundlerLauncher` directory.
 
 ## Contributing
 
