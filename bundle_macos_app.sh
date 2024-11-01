@@ -165,5 +165,7 @@ install_name_tool -change "${HOMEBREW_PREFIX}/lib/libXdmcp.6.dylib" @executable_
 # make launcher.sh executable
 chmod +x "${BUNDLE_CONTENTS}/MacOS/launcher.sh"
 
+rm -rf build/main
+
 # Final message
 echo "Bundle created at: ${BUNDLE_DIR}"
