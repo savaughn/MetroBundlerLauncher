@@ -38,6 +38,9 @@ jobs:
     - name: Bundle into macOS app
       run: ./bundle_macos_app.sh
 
+    - name: Create dmg installer
+      run: make dmg
+
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:

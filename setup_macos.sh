@@ -28,3 +28,7 @@ echo "gtk4 installation complete."
 echo "Installing jansson for json support..."
 brew install jansson
 echo "jansson installation complete."
+
+echo "Installing create-dmg for creating DMG files..."
+brew install create-dmg
+echo "create-dmg installation complete."

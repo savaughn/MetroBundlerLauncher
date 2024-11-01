@@ -32,8 +32,7 @@ bundle: $(TARGET)
 	@./bundle_macos_app.sh
 	@echo "Bundle created in build/"
 
-dmg: $(TARGET)
-	@./bundle_macos_app.sh
+dmg:
 	@create-dmg --volname "Metro Bundler Launcher Installer" --window-pos 200 120 --window-size 800 400 --app-drop-link 600 185 "build/MetroBundlerLauncherInstaller-v$(VERSION).dmg" "build/"
 	@echo "DMG created in build/"
 
