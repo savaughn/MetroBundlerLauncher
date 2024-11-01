@@ -71,7 +71,6 @@ void init_button_box(GtkWidget *button_box, Widgets *widgets, Options *options)
     gtk_widget_set_halign(drawing_area, GTK_ALIGN_START);
     gtk_widget_set_vexpand(drawing_area, TRUE);
 
-    // Define the color (e.g., red)
     GdkRGBA *circle_color = g_malloc(sizeof(GdkRGBA));
     circle_color->red = RED.red;
     circle_color->green = RED.green;

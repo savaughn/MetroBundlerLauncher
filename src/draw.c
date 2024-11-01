@@ -2,7 +2,6 @@
 
 void draw_circle(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpointer user_data)
 {
-    // Cast user_data to GdkRGBA
     GdkRGBA *color = (GdkRGBA *)user_data;
 
     // Set the background color to transparent
@@ -10,9 +9,9 @@ void draw_circle(GtkDrawingArea *area, cairo_t *cr, int width, int height, gpoin
     cairo_paint(cr);
 
     // Calculate the center and radius of the circle
-    double radius = MIN(width, height) / 10.0; // Calculate the radius
-    double center_x = width / 2.0;             // Center X position
-    double center_y = height / 2.0;            // Center Y position
+    double radius = MIN(width, height) / 10.0;
+    double center_x = width / 2.0;
+    double center_y = height / 2.0;
 
     // Draw a dark outline around the entire circle
     cairo_set_source_rgba(cr, 0.1, 0.1, 0.1, 0.75); // Dark color for the outline

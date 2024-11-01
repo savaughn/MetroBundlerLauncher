@@ -65,16 +65,11 @@ void validate_entry_widget(GtkWidget *entry, gpointer data)
         !is_valid_directory(gtk_editable_get_text(GTK_EDITABLE(entry))))
     {
         gtk_widget_add_css_class(entry, "error");
-
-        // Disable the start button if the entry is empty
         update_widget_ui_state(widgets, STATE_ERROR);
     }
     else
     {
-        // Remove the error class from the entry widget
         gtk_widget_remove_css_class(entry, "error");
-
-        // Enable the start button if the entry is not empty
         update_widget_ui_state(widgets, STATE_IDLE);
     }
 
@@ -112,10 +107,8 @@ static int update_single_option_to_application_support(const char *key, json_t *
         return -1;
     }
 
-    // Set the value of the key in the JSON object
     json_object_set_new(root, key, value);
 
-    // Write the JSON object to the file
     FILE *fp = fopen(options_path, "w");
     if (fp == NULL)
     {
@@ -128,7 +121,6 @@ static int update_single_option_to_application_support(const char *key, json_t *
     json_dumpf(root, fp, JSON_INDENT(4));
     fclose(fp);
 
-    // Free the allocated memory
     g_free(options_path);
     json_decref(root);
 
@@ -157,21 +149,18 @@ int read_options_from_application_support(Options *options)
         return -1;
     }
 
-    // Get the port, prefix, and file values from the JSON object
     json_t *port_json = json_object_get(root, "port");
     json_t *prefix_json = json_object_get(root, "prefix");
     json_t *file_json = json_object_get(root, "file");
     json_t *debugger_enabled_json = json_object_get(root, "debugger_enabled");
     json_t *dark_mode_json = json_object_get(root, "dark_mode");
 
-    // Set the port, prefix, and file values
     options->port = g_strdup(json_string_value(port_json));
     options->prefix = g_strdup(json_string_value(prefix_json));
     options->file = g_strdup(json_string_value(file_json));
     options->debugger_enabled = json_boolean_value(debugger_enabled_json);
     options->dark_mode = json_boolean_value(dark_mode_json);
 
-    // Free the allocated memory
     g_free(options_path);
     json_decref(root);
 
@@ -190,17 +179,14 @@ int save_options_to_application_support(const Options *options)
     // Create the path to the application support directory
     char *app_support_path = g_strdup_printf("%s/Library/Application Support/metro-launcher", home);
 
-    // Create the directory if it doesn't exist
     struct stat st = {0};
     if (stat(app_support_path, &st) == -1)
     {
         mkdir(app_support_path, 0700);
     }
 
-    // Create the path to the options file
     char *options_path = g_strdup_printf("%s/options.json", app_support_path);
 
-    // Create the JSON object
     json_t *root = json_object();
     json_object_set_new(root, "port", json_string(options->port));
     json_object_set_new(root, "prefix", json_string(options->prefix));
@@ -231,7 +217,6 @@ int save_options_to_application_support(const Options *options)
     return 0;
 }
 
-// Callback function for the start button click
 void on_start_button_clicked(GtkButton *button, gpointer data)
 {
     Widgets *widgets = (Widgets *)data;
@@ -272,7 +257,13 @@ void on_start_button_clicked(GtkButton *button, gpointer data)
     }
 
     // Execute the osascript command to open a new Terminal window and run the command
-    system(osascript_cmd);
+    GError *error = NULL;
+    g_spawn_command_line_async(osascript_cmd, &error);
+    if (error != NULL)
+    {
+        g_printerr("Error spawning command: %s\n", error->message);
+        g_error_free(error);
+    }
 
     g_free(osascript_cmd);
 

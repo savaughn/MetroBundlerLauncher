@@ -16,7 +16,6 @@ typedef struct {
     gboolean dark_mode;
 } Options;
 
-// Struct to hold label, button widgets, and port entry
 typedef struct {
   GtkLabel *port_label;
   GtkButton *start_button;
@@ -41,7 +40,7 @@ typedef enum
 
 void LOG(const char *restrict fmt, ...);
 
-#define DEFAULT_PORT 8080 // Define the default port
+#define DEFAULT_PORT 8080 
 
 typedef enum
 {
