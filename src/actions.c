@@ -95,7 +95,7 @@ static int update_single_option_to_application_support(const char *key, json_t *
     }
 
     // Create the path to the options file
-    char *options_path = g_strdup_printf("%s/Library/Application Support/metro-launcher/options.json", home);
+    char *options_path = g_strdup_printf("%s/Library/Application Support/MetroBundlerLauncher/options.json", home);
 
     // Read the JSON object from the file
     json_error_t error;
@@ -137,7 +137,7 @@ int read_options_from_application_support(Options *options)
     }
 
     // Create the path to the options file
-    char *options_path = g_strdup_printf("%s/Library/Application Support/metro-launcher/options.json", home);
+    char *options_path = g_strdup_printf("%s/Library/Application Support/MetroBundlerLauncher/options.json", home);
 
     // Read the JSON object from the file
     json_error_t error;
@@ -177,7 +177,7 @@ int save_options_to_application_support(const Options *options)
     }
 
     // Create the path to the application support directory
-    char *app_support_path = g_strdup_printf("%s/Library/Application Support/metro-launcher", home);
+    char *app_support_path = g_strdup_printf("%s/Library/Application Support/MetroBundlerLauncher", home);
 
     struct stat st = {0};
     if (stat(app_support_path, &st) == -1)
