@@ -4,7 +4,14 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/include/**",
-                "/opt/homebrew/Cellar/gtk4/4.16.3/include/gtk-4.0/**"
+                "/opt/homebrew/include/gtk-4.0/**",
+                "/opt/homebrew/include/glib-2.0",
+                "/opt/homebrew/lib/glib-2.0/include",
+                "/opt/homebrew/include/pango-1.0",
+                "/opt/homebrew/include/cairo",
+                "/opt/homebrew/include/gdk-pixbuf-2.0",
+                "/opt/homebrew/include/harfbuzz",
+                "/opt/homebrew/include/fribidi"
             ],
             "defines": [],
             "macFrameworkPath": [
@@ -12,7 +19,8 @@
             ],
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "macos-clang-arm64"
+            "intelliSenseMode": "macos-clang-arm64",
+            "compilerPath": "/usr/bin/clang"
         }
     ],
     "version": 4
